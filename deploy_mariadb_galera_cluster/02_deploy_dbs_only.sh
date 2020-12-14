@@ -11,6 +11,10 @@ if [ ! -d ${OUTPUT_DIR} ]; then
     mkdir -p ${OUTPUT_DIR}
     chmod 755 ${OUTPUT_DIR}
 fi
+### ansible config ###
+export ANSIBLE_HOST_KEY_CHECKING=False
+priv_key="/root/repos/ansible_keys/ansible"
+ansible_user="centos"
 ### deploy databases ###
 echo 'resource "aws_instance" "dbcluster01" {
   ami           = var.AMIS[var.AWS_REGION]
@@ -33,6 +37,9 @@ echo 'resource "aws_instance" "dbcluster01" {
 
   tags = {
     Name = "dbcluster01"
+    Terraform   = "true"
+    Environment = "turbodba-prod"
+    Group = "mariadb-galera-cluster"
   }
 }' > dbcluster01.tf
 
@@ -51,6 +58,9 @@ echo 'resource "aws_instance" "dbcluster02" {
 
   tags = {
     Name = "dbcluster02"
+    Terraform   = "true"
+    Environment = "turbodba-prod"
+    Group = "mariadb-galera-cluster"
   }
 
   root_block_device {
@@ -75,6 +85,9 @@ echo 'resource "aws_instance" "dbcluster03" {
 
   tags = {
     Name = "dbcluster03"
+    Terraform   = "true"
+    Environment = "turbodba-prod"
+    Group = "mariadb-galera-cluster"
   }
 
   root_block_device {
@@ -153,6 +166,11 @@ else
 fi
 
 sleep 90
+
+# setup change hostname #
+ansible -i ${OUTPUT_DIR}/db_hosts.txt -m shell -a "echo \"127.0.0.1 dbcluster01\" | sudo tee -a /etc/hosts && hostnamectl set-hostname dbcluster01" dbcluster01 -u $ansible_user --private-key=$priv_key --become -o > ${OUTPUT_DIR}/setup_change_hostname_dbcluster01.txt
+ansible -i ${OUTPUT_DIR}/db_hosts.txt -m shell -a "echo \"127.0.0.1 dbcluster02\" | sudo tee -a /etc/hosts && hostnamectl set-hostname dbcluster02" dbcluster02 -u $ansible_user --private-key=$priv_key --become -o > ${OUTPUT_DIR}/setup_change_hostname_dbcluster02.txt
+ansible -i ${OUTPUT_DIR}/db_hosts.txt -m shell -a "echo \"127.0.0.1 dbcluster03\" | sudo tee -a /etc/hosts && hostnamectl set-hostname dbcluster03" dbcluster03 -u $ansible_user --private-key=$priv_key --become -o > ${OUTPUT_DIR}/setup_change_hostname_dbcluster03.txt
 
 # MariaDB Galera Cluster installation setup #
 git clone https://github.com/emersongaudencio/ansible-mariadb-galera-cluster.git

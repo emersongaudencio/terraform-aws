@@ -36,6 +36,9 @@ echo 'resource "aws_instance" "proxysql01" {
 
   tags = {
     Name = "proxysql01"
+    Terraform   = "true"
+    Environment = "turbodba-prod"
+    Group = "proxysql-galera-cluster"
   }
 
   root_block_device {
@@ -60,6 +63,9 @@ echo 'resource "aws_instance" "proxysql02" {
 
   tags = {
     Name = "proxysql02"
+    Terraform   = "true"
+    Environment = "turbodba-prod"
+    Group = "proxysql-galera-cluster"
   }
 
   root_block_device {
@@ -101,6 +107,10 @@ echo "proxysql02 ansible_ssh_host=$proxysql02_ip_pub" >> ${OUTPUT_DIR}/proxy_hos
 
 # wait until databases are fully deployed #
 sleep 90
+
+# setup change hostname #
+ansible -i ${OUTPUT_DIR}/proxy_hosts.txt -m shell -a "echo \"127.0.0.1 proxysql01\" | sudo tee -a /etc/hosts && hostnamectl set-hostname proxysql01" proxysql01 -u $ansible_user --private-key=$priv_key --become -o > ${OUTPUT_DIR}/setup_change_hostname_proxysql01.txt
+ansible -i ${OUTPUT_DIR}/proxy_hosts.txt -m shell -a "echo \"127.0.0.1 proxysql02\" | sudo tee -a /etc/hosts && hostnamectl set-hostname proxysql02" proxysql02 -u $ansible_user --private-key=$priv_key --become -o > ${OUTPUT_DIR}/setup_change_hostname_proxysql02.txt
 
 # deploy ProxySQL to the new VM instances using Ansible
 ansible -i ${OUTPUT_DIR}/proxy_hosts.txt -m shell -a "curl -sS https://raw.githubusercontent.com/emersongaudencio/general-deployment-scripts/master/automation/install_ansible_proxysql2_galera.sh | sudo bash" proxyservers -u $ansible_user --private-key=$priv_key --become -o > ${OUTPUT_DIR}/install_proxysql_proxyservers.txt

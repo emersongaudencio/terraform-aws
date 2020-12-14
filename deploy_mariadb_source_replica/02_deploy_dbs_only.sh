@@ -31,6 +31,9 @@ echo 'resource "aws_instance" "dbprimary01" {
 
   tags = {
     Name = "dbprimary01"
+    Terraform   = "true"
+    Environment = "turbodba-prod"
+    Group = "mariadb-source-replica"
   }
 
   root_block_device {
@@ -55,6 +58,9 @@ echo 'resource "aws_instance" "dbreplica01" {
 
   tags = {
     Name = "dbreplica01"
+    Terraform   = "true"
+    Environment = "turbodba-prod"
+    Group = "mariadb-source-replica"
   }
 
   root_block_device {
@@ -79,6 +85,9 @@ echo 'resource "aws_instance" "dbreplica02" {
 
   tags = {
     Name = "dbreplica02"
+    Terraform   = "true"
+    Environment = "turbodba-prod"
+    Group = "mariadb-source-replica"
   }
 
   root_block_device {
@@ -125,6 +134,11 @@ echo "dbreplica02 ansible_ssh_host=$dbreplica02_ip_pub" >> ${OUTPUT_DIR}/db_host
 
 # wait until ssh conn are fully deployed #
 sleep 90
+
+# setup change hostname #
+ansible -i ${OUTPUT_DIR}/db_hosts.txt -m shell -a "echo \"127.0.0.1 dbprimary01\" | sudo tee -a /etc/hosts && hostnamectl set-hostname dbprimary01" dbprimary01 -u $ansible_user --private-key=$priv_key --become -o > ${OUTPUT_DIR}/setup_change_hostname_dbprimary01.txt
+ansible -i ${OUTPUT_DIR}/db_hosts.txt -m shell -a "echo \"127.0.0.1 dbreplica01\" | sudo tee -a /etc/hosts && hostnamectl set-hostname dbreplica01" dbreplica01 -u $ansible_user --private-key=$priv_key --become -o > ${OUTPUT_DIR}/setup_change_hostname_dbreplica01.txt
+ansible -i ${OUTPUT_DIR}/db_hosts.txt -m shell -a "echo \"127.0.0.1 dbreplica02\" | sudo tee -a /etc/hosts && hostnamectl set-hostname dbreplica02" dbreplica02 -u $ansible_user --private-key=$priv_key --become -o > ${OUTPUT_DIR}/setup_change_hostname_dbreplica02.txt
 
 # deploy MariaDB to the new VM instances using Ansible
 ansible -i ${OUTPUT_DIR}/db_hosts.txt -m shell -a "curl -sS https://raw.githubusercontent.com/emersongaudencio/general-deployment-scripts/master/automation/install_ansible_mariadb_104.sh | sudo bash" dbservers -u $ansible_user --private-key=$priv_key --become -o > ${OUTPUT_DIR}/install_mariadb_dbservers.txt
