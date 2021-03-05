@@ -31,9 +31,25 @@ echo 'module "vpc-prod" {
   azs             = ["${var.AWS_REGION}a", "${var.AWS_REGION}b", "${var.AWS_REGION}c"]
   private_subnets = ["10.70.1.0/24", "10.70.2.0/24", "10.70.3.0/24"]
   public_subnets  = ["10.70.101.0/24", "10.70.102.0/24", "10.70.103.0/24"]
+  database_subnets    = ["10.70.21.0/24", "10.70.22.0/24"]
+  elasticache_subnets = ["10.70.31.0/24", "10.70.32.0/24"]
+  redshift_subnets    = ["10.70.41.0/24", "10.70.42.0/24"]
+  intra_subnets       = ["10.70.51.0/24", "10.70.52.0/24"]
+
 
   enable_nat_gateway = true
   single_nat_gateway = true
+  one_nat_gateway_per_az = false
+
+  create_database_subnet_group           = true
+  create_database_subnet_route_table     = true
+  create_database_internet_gateway_route = false
+
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+
+  enable_public_redshift = false
+
   enable_vpn_gateway = false
 
   tags = {
@@ -52,9 +68,24 @@ module "vpc-pre-prod" {
   azs             = ["${var.AWS_REGION}a", "${var.AWS_REGION}b", "${var.AWS_REGION}c"]
   private_subnets = ["10.60.1.0/24", "10.60.2.0/24", "10.60.3.0/24"]
   public_subnets  = ["10.60.101.0/24", "10.60.102.0/24", "10.60.103.0/24"]
+  database_subnets    = ["10.60.21.0/24", "10.60.22.0/24"]
+  elasticache_subnets = ["10.60.31.0/24", "10.60.32.0/24"]
+  redshift_subnets    = ["10.60.41.0/24", "10.60.42.0/24"]
+  intra_subnets       = ["10.60.51.0/24", "10.60.52.0/24"]
 
   enable_nat_gateway = true
   single_nat_gateway = true
+  one_nat_gateway_per_az = false
+
+  create_database_subnet_group           = true
+  create_database_subnet_route_table     = true
+  create_database_internet_gateway_route = false
+
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+
+  enable_public_redshift = false
+
   enable_vpn_gateway = false
 
   tags = {
@@ -73,9 +104,24 @@ module "vpc-staging" {
   azs             = ["${var.AWS_REGION}a", "${var.AWS_REGION}b", "${var.AWS_REGION}c"]
   private_subnets = ["10.50.1.0/24", "10.50.2.0/24", "10.50.3.0/24"]
   public_subnets  = ["10.50.101.0/24", "10.50.102.0/24", "10.50.103.0/24"]
+  database_subnets    = ["10.50.21.0/24", "10.50.22.0/24"]
+  elasticache_subnets = ["10.50.31.0/24", "10.50.32.0/24"]
+  redshift_subnets    = ["10.50.41.0/24", "10.50.42.0/24"]
+  intra_subnets       = ["10.50.51.0/24", "10.50.52.0/24"]
 
   enable_nat_gateway = true
   single_nat_gateway = true
+  one_nat_gateway_per_az = false
+
+  create_database_subnet_group           = true
+  create_database_subnet_route_table     = true
+  create_database_internet_gateway_route = false
+
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+
+  enable_public_redshift = false
+
   enable_vpn_gateway = false
 
   tags = {
@@ -94,9 +140,24 @@ module "vpc-dev" {
   azs             = ["${var.AWS_REGION}a", "${var.AWS_REGION}b", "${var.AWS_REGION}c"]
   private_subnets = ["10.40.1.0/24", "10.40.2.0/24", "10.40.3.0/24"]
   public_subnets  = ["10.40.101.0/24", "10.40.102.0/24", "10.40.103.0/24"]
+  database_subnets    = ["10.40.21.0/24", "10.40.22.0/24"]
+  elasticache_subnets = ["10.40.31.0/24", "10.40.32.0/24"]
+  redshift_subnets    = ["10.40.41.0/24", "10.40.42.0/24"]
+  intra_subnets       = ["10.40.51.0/24", "10.40.52.0/24"]
 
   enable_nat_gateway = true
   single_nat_gateway = true
+  one_nat_gateway_per_az = false
+
+  create_database_subnet_group           = true
+  create_database_subnet_route_table     = true
+  create_database_internet_gateway_route = false
+
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+
+  enable_public_redshift = false
+
   enable_vpn_gateway = false
 
   tags = {
