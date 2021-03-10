@@ -1,4 +1,5 @@
 #!/bin/bash
+# https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest
 ### create aws config cred file ###
 echo 'AWS_ACCESS_KEY:AAAAAAAAAAAAAAAAAAAA
 AWS_SECRET_KEY:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' > .aws_cred
@@ -166,6 +167,39 @@ module "vpc-dev" {
   }
 }
 ' > vpc.tf
+
+echo '# Output the VPC ids
+output "vpc_prod_id" {  value = module.vpc-prod.vpc_id }
+output "vpc_pre_prod_id" {  value = module.vpc-pre-prod.vpc_id }
+output "vpc_staging_id" {  value = module.vpc-staging.vpc_id }
+output "vpc_dev_id" {  value = module.vpc-dev.vpc_id }
+
+# Output the CIDR blocks
+output "vpc_prod_cidr_block" {  value = module.vpc-prod.vpc_cidr_block }
+output "vpc_pre_prod_cidr_block" {  value = module.vpc-pre-prod.vpc_cidr_block }
+output "vpc_staging_cidr_block" {  value = module.vpc-staging.vpc_cidr_block }
+output "vpc_dev_cidr_block" {  value = module.vpc-dev.vpc_cidr_block }
+
+# Output the subnet id from vpc-prod
+output "private_vpc_prod_subnet_ids"   {  value = module.vpc-prod.private_subnets  }
+output "public_vpc_prod_subnet_ids"    {  value = module.vpc-prod.public_subnets   }
+output "database_vpc_prod_subnet_ids"  {  value = module.vpc-prod.database_subnets }
+
+# Output the subnet id from vpc-pre-prod
+output "private_vpc_pre_prod_subnet_ids"  { value = module.vpc-pre-prod.private_subnets  }
+output "public_vpc_pre_prod_subnet_ids"   { value = module.vpc-pre-prod.public_subnets   }
+output "database_vpc_pre_prod_subnet_ids" { value = module.vpc-pre-prod.database_subnets }
+
+# Output the subnet id from vpc-staging
+output "private_vpc_staging_subnet_ids"  { value = module.vpc-staging.private_subnets  }
+output "public_vpc_staging_subnet_ids"   { value = module.vpc-staging.public_subnets   }
+output "database_vpc_staging_subnet_ids" { value = module.vpc-staging.database_subnets }
+
+# Output the subnet id from vpc-dev
+output "private_vpc_dev_subnet_ids"  { value = module.vpc-dev.private_subnets  }
+output "public_vpc_dev_subnet_ids"   { value = module.vpc-dev.public_subnets   }
+output "database_vpc_dev_subnet_ids" { value = module.vpc-dev.database_subnets }
+' > output_vpc.tf
 
 ### apply changes to aws ###
 terraform init
