@@ -132,40 +132,9 @@ echo "dbcluster01 ansible_ssh_host=$dbcluster01_ip_pub" >> ${OUTPUT_DIR}/db_host
 echo "dbcluster02 ansible_ssh_host=$dbcluster02_ip_pub" >> ${OUTPUT_DIR}/db_hosts.txt
 echo "dbcluster03 ansible_ssh_host=$dbcluster03_ip_pub" >> ${OUTPUT_DIR}/db_hosts.txt
 
-#### install python2 #####
-verify_python=`rpm -qa | grep python-2.7`
-if [[ "${verify_python}" == "python-2.7"* ]] ; then
-echo "$verify_python is installed!"
-else
-   sudo yum install python -y
-fi
-
-#### install git #####
-verify_git=`rpm -qa | grep git-1`
-if [[ "${verify_git}" == "git"* ]] ; then
-echo "$verify_git is installed!"
-else
-   sudo yum install git -y
-fi
-
-#### install pip #####
-verify_pip=`pip -V`
-if [[ "${verify_pip}" == "pip"* ]] ; then
-echo "$verify_pip is installed!"
-else
-   curl -sS https://bootstrap.pypa.io/get-pip.py | sudo python
-fi
-
-#### install ansible #####
-verify_ansible=`ansible --version`
-if [[ "${verify_ansible}" == "ansible"* ]] ; then
-echo "$verify_ansible is installed!"
-else
-  sudo pip install ansible --upgrade
-  ansible --version
-fi
-
-sleep 90
+### pre-reqs install ###
+curl -s https://raw.githubusercontent.com/emersongaudencio/general-deployment-scripts/master/automation/install_ansible_latest.sh -o install_ansible_latest.sh
+sh install_ansible_latest.sh
 
 # setup change hostname #
 ansible -i ${OUTPUT_DIR}/db_hosts.txt -m shell -a "echo \"127.0.0.1 dbcluster01\" | sudo tee -a /etc/hosts && hostnamectl set-hostname dbcluster01" dbcluster01 -u $ansible_user --private-key=$priv_key --become -o > ${OUTPUT_DIR}/setup_change_hostname_dbcluster01.txt
@@ -176,8 +145,10 @@ ansible -i ${OUTPUT_DIR}/db_hosts.txt -m shell -a "echo \"127.0.0.1 dbcluster03\
 git clone https://github.com/emersongaudencio/ansible-percona-xtradb-cluster.git
 cd ansible-percona-xtradb-cluster/ansible
 priv_key="/root/repos/ansible_keys/ansible"
+# adjusting ansible parameters
+sed -ie 's/ansible/\/usr\/local\/bin\/ansible/g' run_xtradb_galera_install.sh
 sed -ie 's/# remote_user = ec2-user/remote_user = centos/g' ansible.cfg
-#### MariaDB deployment variables ####
+#### XtraDB deployment variables ####
 GTID=$(($RANDOM))
 echo $GTID > GTID
 PXC_VERSION="80"
