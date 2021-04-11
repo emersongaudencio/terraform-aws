@@ -1,5 +1,6 @@
 #!/bin/bash
 # https://registry.terraform.io/modules/terraform-aws-modules/s3-bucket/aws/latest
+# https://www.terraform.io/docs/language/settings/backends/s3.html
 ### create aws config cred file ###
 echo 'AWS_ACCESS_KEY:AAAAAAAAAAAAAAAAAAAA
 AWS_SECRET_KEY:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' > .aws_cred
