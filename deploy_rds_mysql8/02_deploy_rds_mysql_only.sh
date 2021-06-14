@@ -1,8 +1,7 @@
 #!/bin/bash
-# https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest
 ### create aws config cred file ###
-echo 'AWS_ACCESS_KEY:AKIAYFFHMDXZ26BI5CFB
-AWS_SECRET_KEY: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' > .aws_cred
+echo 'AWS_ACCESS_KEY:AAAAAAAAAAAAAAAAAAAA
+AWS_SECRET_KEY:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' > .aws_cred
 
 ### initialize aws config ###
 TF_VAR_AWS_ACCESS_KEY=$(cat .aws_cred | grep AWS_ACCESS_KEY | awk -F ":" {'print $2'})
