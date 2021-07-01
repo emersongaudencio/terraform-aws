@@ -24,7 +24,7 @@ module "rds" {
 
   # All available versions: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.MariaDB.Parameters.html
   engine               = "mariadb"
-  engine_version       = "10.3.28"
+  engine_version       = "10.3.28"   # MariaDB version 10.3.20-28/10.4.13-18/10.5.8-9
   major_engine_version = "10.3"      # DB option group
   instance_class       = var.DB_INSTANCE_TYPE
 
