@@ -35,7 +35,7 @@ module "rds" {
   name     = "dbadmin"
   username = "dbadmin"
   password = "YourPwdShouldBeLongAndSecure!"
-  port     = 3306
+  port     = 5432
 
   multi_az               = true
   subnet_ids             = [var.DB_SUBNET_ID_AZA, var.DB_SUBNET_ID_AZB]
